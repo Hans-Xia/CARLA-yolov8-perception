@@ -1,5 +1,8 @@
 # CARLA Traffic Perception with YOLOv8
 
+[English](#english) | [中文](#中文)
+
+## English
 An end-to-end simulated autonomous-driving perception pipeline for **traffic sign and traffic light detection** using CARLA and YOLOv8.
 
 The project covers the complete workflow from sensor-based data generation in a driving simulator to YOLO-format annotation, model training, evaluation, and frame-by-frame video inference.
@@ -178,26 +181,6 @@ Annotated videos and structured detection logs can be generated for subsequent a
 - Google Colab
 - CUDA
 
-## Project Structure
-
-```text
-carla-yolov8-perception/
-├── carla/
-│   ├── sensor_setup.py
-│   ├── data_collection.py
-│   └── annotation_generation.py
-├── dataset/
-│   └── data.yaml
-├── training/
-│   ├── train_scratch.py
-│   └── train_pretrained.py
-├── inference/
-│   └── video_inference.py
-├── evaluation/
-├── assets/
-├── requirements.txt
-└── README.md
-```
 
 ## Key Takeaways
 
@@ -222,3 +205,80 @@ Possible extensions include:
 - Class-specific confidence-threshold optimization
 - Temporal tracking across video frames
 - Domain adaptation from simulation to real-world driving scenes
+
+## 中文
+
+# 基于 CARLA 与 YOLOv8 的交通感知
+
+基于 CARLA 自动驾驶仿真环境和 YOLOv8 实现交通标志与交通信号灯检测。
+
+## 项目概述
+
+本项目构建了一套从仿真数据生成到目标检测的完整流程：
+
+1. 在 **CARLA** 中生成驾驶场景
+2. 获取 RGB、语义分割与实例分割数据
+3. 自动生成目标检测标注
+4. 训练 YOLOv8
+5. 对驾驶视频进行逐帧推理
+
+## 数据集
+
+仿真数据集规模如下：
+
+| 数据划分 | 图像数量 |
+| --- | ---: |
+| 训练集 | 210 |
+| 验证集 | 60 |
+| 测试集 | 30 |
+
+检测类别包括：
+
+- 交通标志
+- 交通信号灯
+
+最终共生成 **454 个交通标志实例** 和 **278 个交通信号灯实例**。
+
+## 检测流程
+
+```text
+CARLA 仿真器
+     │
+     ├── RGB 相机
+     ├── 语义分割相机
+     └── 实例分割相机
+             │
+             ▼
+        自动生成标注
+             │
+             ▼
+         YOLO 数据集
+             │
+             ▼
+        YOLOv8 训练
+             │
+             ▼
+          视频推理
+```
+
+## 实验结果
+
+| 模型 | Precision | Recall | mAP@50 | mAP@50–95 |
+| --- | ---: | ---: | ---: | ---: |
+| 预训练 YOLOv8n | 0.7151 | 0.4293 | **0.5036** | **0.3258** |
+
+在该仿真数据集上，使用预训练权重的 YOLOv8n 获得了最好的整体检测表现。
+
+## Demo
+
+交通标志、交通信号灯检测结果以及视频推理示例可放置于 `assets` 目录中。
+
+## 技术栈
+
+- CARLA 0.9.15
+- YOLOv8
+- PyTorch
+- OpenCV
+- Python
+- CUDA
+
