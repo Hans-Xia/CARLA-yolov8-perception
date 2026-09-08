@@ -112,8 +112,8 @@ The generated dataset contains:
 
 | Class | Instances |
 | --- | ---: |
-| Traffic signs | 454 |
-| Traffic lights | 278 |
+| Traffic signs | 619 |
+| Traffic lights | 649 |
 
 Traffic objects are often relatively small compared with the full road-scene image, making localization challenging despite the controlled simulation environment.
 
@@ -146,14 +146,11 @@ All main experiments use:
 
 | Model | Precision | Recall | mAP@50 | mAP@50–95 |
 | --- | ---: | ---: | ---: | ---: |
-| YOLOv8n, scratch, 100 epochs | 0.9245 | — | 0.3207 | — |
-| YOLOv8n, pretrained, 100 epochs | **0.7151** | **0.4293** | **0.5036** | **0.3258** |
+| YOLOv8n scratch, 100 epochs | 0.9571 | 0.7087 | 0.8156 | 0.6713 |
+| YOLOv8n pretrained, 100 epochs | **0.9402** | **0.9176** | **0.9585** | **0.8567** |
 
-The pretrained model achieves the strongest overall validation performance.
 
-Although the scratch model reaches high precision, its lower mAP indicates weaker overall detection coverage.
-
-Transfer learning provides a substantially better balance between localization and classification quality for the relatively small simulated dataset.
+The pretrained YOLOv8n model achieved the best overall detection performance, reaching **mAP@50 = 0.9585** and **mAP@50–95 = 0.8567**.
 
 ## Video Inference
 
@@ -178,33 +175,8 @@ Annotated videos and structured detection logs can be generated for subsequent a
 - PyTorch
 - OpenCV
 - NumPy
-- Google Colab
 - CUDA
 
-
-## Key Takeaways
-
-This project demonstrates a complete simulation-to-perception workflow:
-
-1. Generate autonomous-driving scenes in CARLA.
-2. Collect synchronized visual and segmentation sensor data.
-3. Automatically generate object-detection labels.
-4. Train a YOLOv8 detector.
-5. Evaluate detection performance.
-6. Deploy the model on sequential driving video.
-
-The experiment also demonstrates the benefit of transfer learning when the available task-specific dataset is relatively small.
-
-## Future Work
-
-Possible extensions include:
-
-- Increasing the number and diversity of simulated scenes
-- Collecting data under more weather and lighting conditions
-- Adding vehicles and pedestrians as additional classes
-- Class-specific confidence-threshold optimization
-- Temporal tracking across video frames
-- Domain adaptation from simulation to real-world driving scenes
 
 ## 中文
 
@@ -237,7 +209,10 @@ Possible extensions include:
 - 交通标志
 - 交通信号灯
 
-最终共生成 **454 个交通标志实例** 和 **278 个交通信号灯实例**。
+最终共生成 **1,268 个目标标注框**，其中：
+
+- **619 个交通标志**
+- **649 个交通信号灯**
 
 ## 检测流程
 
@@ -265,20 +240,19 @@ CARLA 仿真器
 
 | 模型 | Precision | Recall | mAP@50 | mAP@50–95 |
 | --- | ---: | ---: | ---: | ---: |
-| 预训练 YOLOv8n | 0.7151 | 0.4293 | **0.5036** | **0.3258** |
+| YOLOv8n 从头训练，100 epochs | 0.9571 | 0.7087 | 0.8156 | 0.6713 |
+| YOLOv8n 预训练权重，100 epochs | **0.9402** | **0.9176** | **0.9585** | **0.8567** |
 
-在该仿真数据集上，使用预训练权重的 YOLOv8n 获得了最好的整体检测表现。
+使用预训练权重的 YOLOv8n 获得了最佳整体检测性能，达到 **mAP@50 = 0.9585**、**mAP@50–95 = 0.8567**。
 
-## Demo
-
-交通标志、交通信号灯检测结果以及视频推理示例可放置于 `assets` 目录中。
+训练完成后，模型还在一段包含 **2,948 帧**的驾驶视频上进行了逐帧推理。
 
 ## 技术栈
 
 - CARLA 0.9.15
-- YOLOv8
+- Python
+- YOLOv8 / Ultralytics
 - PyTorch
 - OpenCV
-- Python
+- NumPy
 - CUDA
-
